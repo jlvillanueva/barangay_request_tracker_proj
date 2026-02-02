@@ -43,7 +43,7 @@ def createServiceRequest(data):
 
         req = ServiceRequest(
             user_id=data.get('user_id'),
-            description=data.get('description'),
+            description=data.get('requestDescription'),
             location=data.get('location'),
             priority=data.get('priority', 'Medium'),
         )

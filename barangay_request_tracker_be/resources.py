@@ -127,6 +127,7 @@ class GetUserDetails(Resource):
             }, 404
         
 class ServiceRequestLists(Resource):
+    # @verify_payload()
     def get(self):
         # Implementation for fetching service request lists goes here
        result = getAllServiceRequests()
