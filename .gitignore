@@ -1,0 +1,6 @@
+barangay_request_tracker_fe/build/
+.DS_Store
+.env
+__pycache__/
+*.pyc
+barangay_request_tracker_be/instance/
