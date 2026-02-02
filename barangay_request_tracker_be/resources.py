@@ -13,6 +13,8 @@ from mobile_sql_alchemy import mobile_db
 
 from models.mod_users import Users
 from modules.functions import VerifyPhrase, GenerateSaltKey
+from modules.services import createServiceRequest, getAllServiceRequests
+
 
 
 # Logging config
@@ -69,7 +71,7 @@ class MobileRegistration(Resource):
             lastName=data.get('data').get('lastName'),
             phoneNumber=data.get('data').get('phoneNumber'),
             middleName=data.get('data').get('middleName'),
-            role=data.get('data').get('role', 'RESIDENT'),
+            role=data.get('data').get('role', '3'),
             createdAt=datetime.now(),
             password_salt=reply['salt'],
             password_key=reply['key'],
@@ -87,9 +89,69 @@ class MobileRegistration(Resource):
                 'cpnumber': db_user.phoneNumber
             }, 201
         except Exception as e:
-            mobile_db.session.rollback()
             logger.error(f"Registration failed: {e}")
             return {
                 'rc': 401,
                 'status': 'Registration Failed'
             }, 401
+
+class GetUserDetails(Resource):
+    @verify_payload()
+    def post(self):
+        data = json.loads(request.data, object_pairs_hook=OrderedDict)
+        dictdata = data.get('data')
+
+        userId = dictdata.get('userId')
+
+        user = Users.query.filter_by(id=userId).first()
+
+        if user:
+            return {
+                'rc': 200,
+                'status': 'User Found',
+                'data': {
+                    'id': user.id,
+                    'username': user.username,
+                    'firstName': user.firstName,
+                    'lastName': user.lastName,
+                    'middleName': user.middleName,
+                    'phoneNumber': user.phoneNumber,
+                    'role': user.role,
+                    'createdAt': user.createdAt.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+            }, 200
+        else:
+            return {
+                'rc': 404,
+                'status': 'User Not Found'
+            }, 404
+        
+class ServiceRequestLists(Resource):
+    def get(self):
+        # Implementation for fetching service request lists goes here
+       result = getAllServiceRequests()
+       return result
+    
+class ServiceRequest(Resource):
+    @verify_payload()
+    def post(self):
+
+        data = json.loads(request.data, object_pairs_hook=OrderedDict)
+        dictdata = data.get('data')
+
+        result = createServiceRequest(dictdata)
+
+        return result
+
+class UpdateServiceRequest(Resource):
+    @verify_payload()
+    def post(self):
+        data = json.loads(request.data, object_pairs_hook=OrderedDict)
+        dictdata = data.get('data')
+
+        # Implementation for updating service request goes here
+
+        return {
+            'rc': 200,
+            'status': 'Service Request Updated Successfully'
+        }, 200
