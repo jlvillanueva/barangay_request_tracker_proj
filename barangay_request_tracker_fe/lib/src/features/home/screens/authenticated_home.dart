@@ -32,7 +32,12 @@ class _AuthenticatedHomeState extends State<AuthenticatedHome> {
             builder: (context) {
               return ServiceRequestForm();
             },
-          );
+          ).then((result) {
+            if (result == true) {
+              context.read<ServiceRequestListCubit>().getServiceRequests();
+              setState(() {});
+            }
+          });
         },
         child: const Icon(Icons.add),
       ),
