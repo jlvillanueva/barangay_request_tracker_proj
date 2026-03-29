@@ -35,22 +35,14 @@ def generate_token():
         logger.warning(f"Generated JWT Token for user {user.username}: {access_token}")
 
         return {
-            'rc': 201,
+            'statusCode': 201,
             'status': 'Login Successfully',
             'clientId': user.id,
             'access_token': access_token,
-            'userDetails': {
-                'username': user.username,
-                'firstName': user.firstName,
-                'middleName': user.middleName,
-                'lastName': user.lastName,
-                'contactNumber': user.phoneNumber,
-                'role': user.role,
-            }
         }
     else:
         return {
-            'rc': 401,
+            'statusCode': 401,
             'status': 'Invalid credentials',
         }
     return token
